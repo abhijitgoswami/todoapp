@@ -1,23 +1,42 @@
-import logo from './logo.svg';
+import { useState, useEffect } from 'react';
 import './App.css';
+import {getTasks, addTask} from './Service/TaskService'
 
 function App() {
+  const [tasks, setTasks] = useState([]);
+  const [task, setTask] = useState("");
+
+  function getAllTask(){
+    getTasks().then(res => {
+      setTasks(res)
+    })
+    console.log("tasks : " + tasks)
+  }
+
+  function handlSubmit(event){
+    event.preventDefault()
+    addTask(task)
+    
+  }
+
+  function handleChange(event){
+    setTask(event.target.value)
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <h1>Tasks</h1>
+      <form onSubmit={handlSubmit}>
+        <label >Type a task : </label>
+        <input type="text" value={task} onChange={handleChange}/>
+        <button typeof='submit'>Add New Task</button>
+      </form>
+      <button onClick={getAllTask}>Show Tasks</button>
+      <div>
+        {tasks.map(task => {
+          return <p key={task.id}>{task.task}</p>
+        })}
+      </div>
     </div>
   );
 }
